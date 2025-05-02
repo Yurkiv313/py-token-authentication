@@ -28,35 +28,28 @@ class BaseListCreateMixins(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet
 ):
-    pass
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    http_method_names = ["get", "post", "head", "options"]
 
 
 class GenreViewSet(BaseListCreateMixins):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-    http_method_names = ["get", "post", "head", "options"]
 
 
 class ActorViewSet(BaseListCreateMixins):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-    http_method_names = ["get", "post", "head", "options"]
 
 
 class CinemaHallViewSet(BaseListCreateMixins):
     queryset = CinemaHall.objects.all()
     serializer_class = CinemaHallSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-    http_method_names = ["get", "post", "head", "options"]
 
 
 class MovieViewSet(BaseListCreateMixins, mixins.RetrieveModelMixin):
     queryset = Movie.objects.prefetch_related("genres", "actors")
     serializer_class = MovieSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-    http_method_names = ["get", "post", "head", "options"]
 
     @staticmethod
     def _params_to_ints(qs):
@@ -153,7 +146,6 @@ class OrderViewSet(BaseListCreateMixins):
     serializer_class = OrderSerializer
     pagination_class = OrderPagination
     permission_classes = (IsAuthenticated,)
-    http_method_names = ["get", "post", "head", "options"]
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
